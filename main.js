@@ -5,20 +5,61 @@ const form = document.querySelector('form');
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
+  showSpinner();
+
   const data = new FormData(form);
 
   const response = await fetch('http://localhost:8080/dream', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       prompt: data.get('prompt'),
     })
   });
 
-  const { image } = await response.json();
+  if (response.ok) {
+    const { image } = await response.json();
 
-  const result = document.querySelector('#result');
-  result.innerHTML = `<img src="${image}" width="512 />`;
+    const result = document.querySelector('#result');
+    result.innerHTML = '';
+    // result.innerHTML = `<img src="${image}" width="512 />`;
+
+
+    let imageContainer = document.querySelector('#imageContainer');
+
+    if (!imageContainer) {
+      let img = document.createElement('img');
+
+      img.id = 'imageContainer';
+      img.width = 512;
+      img.src = image;
+
+      result.appendChild(img);
+    } else {
+      imageContainer.src = image;
+    }
+
+
+
+  } else {
+    const err = await response.text();
+    alert(err);
+    console.error(err);
+  }
+
+  hideSpinner();
 });
+
+function showSpinner() {
+  const button = document.querySelector('button');
+  button.disabled = true;
+  button.innerHTML = 'Generating... <span class="spinner">⚡</span>';
+}
+
+function hideSpinner() {
+  const button = document.querySelector('button');
+  button.disabled = false;
+  button.innerHTML = 'Generate';
+}
