@@ -21,8 +21,6 @@ app.post('/dream', async (request, response) => {
         size: '1024x1024',
     });
 
-    console.log("Image generation response: ", aiResponse);
-
     const image = aiResponse.data[0].url;
     response.send({ image });
 });
