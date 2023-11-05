@@ -26,3 +26,5 @@ app.post('/dream', async (request, response) => {
     const image = aiResponse.data.data[0].url;
     response.send({ image });
 });
+
+app.listen(8080, () => console.log('Image generator running on http://localhost:8080/dream'));
